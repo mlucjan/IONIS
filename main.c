@@ -2,9 +2,11 @@
 #include "mic.h"
 
 unsigned char micFlag = 0x01;
-uint32_t currResult, maxResult;
+uint32_t currResult;
+uint32_t maxResult = 0;
+uint32_t minResult = 0x00FFFFFF;
 uint16_t timerOverflowCounter=0;
-uint16_t maxTimerOverflows = 1000;
+uint16_t maxTimerOverflows = 1000; //12MHz clock + divider(2) -> timer overflows in ~11ms
 char resultString[8];
 int i;
 
@@ -15,7 +17,7 @@ void main (void)
     WDT_A_hold(WDT_A_BASE);
 
     set_clock_signals();
-    init_UART();
+    init_uart();
     init_sdc();
 
     //Start timer in continuous mode sourced by SMCLK
@@ -34,6 +36,9 @@ void main (void)
 
             if(currResult > maxResult){
                 maxResult = currResult;
+            }
+            else if(currResult < minResult){
+                minResult = currResult;
             }
 
             ltoa(currResult, resultString);
@@ -57,7 +62,7 @@ void main (void)
 
 //******************************************************************************
 //
-//This is the USCI_A0 interrupt vector service routine.
+//This is the USCI_A1 interrupt vector service routine.
 //
 //******************************************************************************
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
@@ -77,6 +82,34 @@ void EUSCI_A1_ISR(void)
     case USCI_UART_UCTXCPTIFG: break;
   }
 }
+
+//******************************************************************************
+//
+//This is the USCI_A0 interrupt vector service routine.
+//
+//******************************************************************************
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector=USCI_A0_VECTOR
+__interrupt
+#elif defined(__GNUC__)
+__attribute__((interrupt(USCI_A0_VECTOR)))
+#endif
+void USCI_A0_ISR (void)
+{
+    switch (__even_in_range(UCA0IV,4)){
+        //Vector 2 - RXIFG
+        case 2:
+            //USCI_A0 TX buffer ready?
+//            while (!USCI_A_SPI_getInterruptStatus(USCI_A0_BASE,
+//                       USCI_A_SPI_TRANSMIT_INTERRUPT)) ;
+//
+//            receiveData = USCI_A_SPI_receiveData(USCI_A0_BASE);
+
+            break;
+        default: break;
+    }
+}
+
 
 //******************************************************************************
 //

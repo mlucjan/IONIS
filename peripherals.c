@@ -1,6 +1,6 @@
 #include "peripherals.h"
 
-void init_UART(){
+void init_uart(){
     //Configure UART pins (UCA1TXD/UCA1SIMO, UCA1RXD/UCA1SOMI)
     //Set P1.4 and P1.5 as Module Function Input
     GPIO_setAsPeripheralModuleFunctionInputPin(
@@ -11,8 +11,8 @@ void init_UART(){
     // Configure UART
     EUSCI_A_UART_initParam param = {0};
     param.selectClockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK;
-    param.clockPrescalar = 78;
-    param.firstModReg = 2;
+    param.clockPrescalar = 6;
+    param.firstModReg = 8;
     param.secondModReg = 0;
     param.parity = EUSCI_A_UART_NO_PARITY;
     param.msborLsbFirst = EUSCI_A_UART_LSB_FIRST;
@@ -31,7 +31,7 @@ void init_UART(){
 
     // Enable USCI_A1 RX interrupt
     EUSCI_A_UART_enableInterrupt(EUSCI_A1_BASE,
-                                 EUSCI_A_UART_RECEIVE_INTERRUPT);                     // Enable interrupt
+                                 EUSCI_A_UART_RECEIVE_INTERRUPT);         // Enable interrupt
 
     __enable_interrupt();
 }
@@ -58,6 +58,36 @@ void init_sdc(){
 
 }
 
+/*void init_spi(){
+    GPIO_setAsPeripheralModuleFunctionInputPin(
+            GPIO_PORT_P2,
+            GPIO_PIN2 + GPIO_PIN3 + GPIO_PIN5 + GPIO_PIN6
+    );
+
+    //Initialize Master
+        USCI_A_SPI_initMasterParam param = {0};
+        param.selectClockSource = USCI_A_SPI_CLOCKSOURCE_SMCLK;
+        param.clockSourceFrequency = UCS_getSMCLK();
+        param.desiredSpiClock = SPICLK;
+        param.msbFirst = USCI_A_SPI_MSB_FIRST;
+        param.clockPhase = USCI_A_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
+        param.clockPolarity = USCI_A_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
+        returnValue =  USCI_A_SPI_initMaster(USCI_A0_BASE, &param);
+
+        if (STATUS_FAIL == returnValue){
+            return;
+        }
+
+        //Enable SPI module
+        USCI_A_SPI_enable(USCI_A0_BASE);
+
+        //Enable Receive interrupt
+        USCI_A_SPI_clearInterrupt(USCI_A0_BASE,
+            USCI_A_SPI_RECEIVE_INTERRUPT);
+        USCI_A_SPI_enableInterrupt(USCI_A0_BASE,
+            USCI_A_SPI_RECEIVE_INTERRUPT);
+}*/
+
 void ext_uart_crlf(){
 
     EUSCI_A_UART_transmitData(EUSCI_A1_BASE, 0x0d); //CR
@@ -69,6 +99,10 @@ void ext_uart_crlf(){
     EUSCI_A_UART_transmitData(EUSCI_A1_BASE, 0x0a); //LF
 }
 
+/*
+ * !!!!!! Zaszumia strasznie przebieg z mikrofonu
+ *
+ */
 void ext_uart_transmit_string(char string[]){
     int i;
     for(i=0; i<sizeof(string); i++){
