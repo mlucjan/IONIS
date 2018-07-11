@@ -1,6 +1,8 @@
 # FIXED
 
 main.obj: ../main.c
+main.obj: /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/stdlib.h
+main.obj: /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/linkage.h
 main.obj: ../clock_system.h
 main.obj: /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/driverlib.h
 main.obj: /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h
@@ -57,9 +59,10 @@ main.obj: ../mic.h
 main.obj: ../peripherals.h
 main.obj: /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/driverlib.h
 main.obj: /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/stdlib.h
-main.obj: /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/linkage.h
 
 ../main.c: 
+/Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/stdlib.h: 
+/Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/linkage.h: 
 ../clock_system.h: 
 /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/driverlib.h: 
 /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h: 
@@ -116,4 +119,3 @@ main.obj: /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include
 ../peripherals.h: 
 /Users/michal/OneDrive\ -\ Politechnika\ Warszawska/SzkoÅa/IONIS/IONIS_env_sensor/driverlib/MSP430F5xx_6xx/driverlib.h: 
 /Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/stdlib.h: 
-/Applications/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include/linkage.h: 

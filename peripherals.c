@@ -1,5 +1,6 @@
 #include "peripherals.h"
 
+extern char resultString[8];
 void init_uart(){
     //Configure UART pins (UCA1TXD/UCA1SIMO, UCA1RXD/UCA1SOMI)
     //Set P1.4 and P1.5 as Module Function Input
@@ -44,12 +45,24 @@ void init_sdc(){
     initParam.referenceSelect = SD24_B_REF_INTERNAL;
     SD24_B_init(SD24_BASE, &initParam);
 
+    SD24_B_setInterruptDelay(SD24_BASE,
+            SD24_B_CONVERTER_0,
+            SD24_B_FIRST_SAMPLE_INTERRUPT);
+
     SD24_B_initConverterParam initConverterParam = {0};
     initConverterParam.converter = SD24_B_CONVERTER_0;
     initConverterParam.alignment = SD24_B_ALIGN_RIGHT;
     initConverterParam.startSelect = SD24_B_CONVERSION_SELECT_SD24SC;
-    initConverterParam.conversionMode = SD24_B_SINGLE_MODE;
+    initConverterParam.conversionMode = SD24_B_CONTINUOUS_MODE;
     SD24_B_initConverter(SD24_BASE, &initConverterParam);
+
+    // Enable channel 0 interrupt
+       SD24_B_clearInterrupt(SD24_BASE,
+               SD24_B_CONVERTER_0,
+               SD24_B_CONVERTER_INTERRUPT);
+       SD24_B_enableInterrupt(SD24_BASE,
+               SD24_B_CONVERTER_0,
+               SD24_B_CONVERTER_INTERRUPT);
 
     __delay_cycles(0x3600);  // Delay for 1.5V REF startup
 
@@ -103,11 +116,11 @@ void ext_uart_crlf(){
  * !!!!!! Zaszumia strasznie przebieg z mikrofonu
  *
  */
-void ext_uart_transmit_string(char string[]){
+void ext_uart_transmit_resultString(){
     int i;
-    for(i=0; i<sizeof(string); i++){
-        if(string[i] != '\x00'){
-            EUSCI_A_UART_transmitData(EUSCI_A1_BASE, string[i]);
+    for(i=0; i<sizeof(resultString); i++){
+        if(resultString[i] != '\x00'){
+            EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
             while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
                 ;
             }
