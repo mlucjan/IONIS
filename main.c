@@ -8,9 +8,13 @@ uint32_t maxResult = 0;
 uint32_t minResult = 0x00FFFFFF;
 uint16_t timerOverflowCounter=0;
 uint16_t maxTimerOverflows = 10; //12MHz clock + divider(2) -> timer overflows in ~11ms
-char resultString[8];
+char resultText[8];
 int i;
-
+void clearResultText(){
+    for(i=0; i< sizeof(resultText); i++){
+        resultText[i]='\0';
+    }
+}
 void main (void)
 {
 
@@ -39,33 +43,58 @@ void main (void)
 
             SD24_B_stopConverterConversion(SD24_BASE, 0);
 
-            absMinResult = abs(minResult);
-            absMaxResult = abs(maxResult);
+            //absMinResult = abs(minResult);
+            //absMaxResult = abs(maxResult);
 
-            if(absMinResult >= absMaxResult){
-                ltoa(absMinResult, resultString);
-                for(i=0; i<sizeof(resultString); i++){
-                    if(resultString[i] != '\x00'){
-                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
-                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
-                            ;
-                        }
+//            if(absMinResult >= absMaxResult){
+//                ltoa(absMinResult, resultString);
+//                for(i=0; i<sizeof(resultString); i++){
+//                    if(resultString[i] != '\x00'){
+//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+//                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
+//                            ;
+//                        }
+//                    }
+//                }
+//                ext_uart_crlf();
+//            }
+//            else{
+//                ltoa(absMaxResult, resultString);
+//                for(i=0; i<sizeof(resultString); i++){
+//                    if(resultString[i] != '\x00'){
+//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+//                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
+//                            ;
+//                        }
+//                    }
+//                }
+//                ext_uart_crlf();
+//            }
+
+
+
+            ltoa(minResult, resultText);
+            for(i=0; i<sizeof(resultText); i++){
+                if(resultText[i] != '\0'){
+                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
+                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
+                        ;
                     }
                 }
-                ext_uart_crlf();
             }
-            else{
-                ltoa(absMaxResult, resultString);
-                for(i=0; i<sizeof(resultString); i++){
-                    if(resultString[i] != '\x00'){
-                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
-                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
-                            ;
-                        }
+            ext_uart_crlf();
+            clearResultText();
+            ltoa(maxResult, resultText);
+            for(i=0; i<sizeof(resultText); i++){
+                if(resultText[i] != '\0'){
+                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
+                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
+                        ;
                     }
                 }
-                ext_uart_crlf();
             }
+            ext_uart_crlf();
+            clearResultText();
 
             //ext_uart_transmit_string(resultString);
             timerRunning = 0x01;
@@ -184,7 +213,7 @@ void SD24BISR(void)
             break;
         case SD24BIV_SD24IFG0:              // SD24MEM0 IFG
             // Save CH0 results (clears IFG)
-            currResult = SD24_B_getResults(SD24_BASE, SD24_B_CONVERTER_0) - 0x00800000;
+            currResult = SD24_B_getResults(SD24_BASE, SD24_B_CONVERTER_0);
             if(currResult > maxResult){
                 maxResult = currResult;
             }
