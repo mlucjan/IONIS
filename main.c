@@ -1,12 +1,12 @@
 #include "clock_system.h"
 #include "mic.h"
 
-unsigned char micFlag = 0x01;
-uint32_t currResult;
+unsigned char micFlag = 0x01; //flaga do oznaczenia cyklu obsługi mikrofonu
+uint32_t currResult; //aby miec wartości względem 0 trzeba odjąc 0x00800000
 uint32_t maxResult = 0;
 uint32_t minResult = 0x00FFFFFF;
 uint16_t timerOverflowCounter=0;
-uint16_t maxTimerOverflows = 1000; //12MHz clock + divider(2) -> timer overflows in ~11ms
+uint16_t maxTimerOverflows = 1000; //12MHz zegar + divider(2) -> timer przepełnia się w ~11ms
 char resultString[8];
 int i;
 
@@ -34,7 +34,7 @@ void main (void)
         while(micFlag == 0x01){
             currResult = mic_convert_once();
 
-            if(currResult > maxResult){
+            if(currResult > maxResult){ //śledzenie wartości max i min
                 maxResult = currResult;
             }
             else if(currResult < minResult){
@@ -44,7 +44,7 @@ void main (void)
             ltoa(currResult, resultString);
             //ext_uart_transmit_string(resultString);
             for(i=0; i<sizeof(resultString); i++){
-                if(resultString[i] != '\x00'){
+                if(resultString[i] != '\0'){
                     EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
                     while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
                         ;
@@ -137,7 +137,7 @@ void TIMER1_A1_ISR (void)
         case 14:
                                                     // overflow
             timerOverflowCounter++;
-            if(timerOverflowCounter >= maxTimerOverflows){
+            if(timerOverflowCounter >= maxTimerOverflows){ //timer do odmierzania długości cyklu obsługi mikrofonu
                 timerOverflowCounter = 0;
                 micFlag = 0x00;
                 Timer_A_stop(TIMER_A1_BASE);

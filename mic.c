@@ -10,5 +10,5 @@ uint32_t mic_convert_once(){
                                      SD24_B_CONVERTER_INTERRUPT) == 0 );
 
                 // Save CH0 results (clears IFG)
-    return SD24_B_getResults(SD24_BASE, SD24_B_CONVERTER_0) - 0x00800000; //(0080 0000)hex -> conversion result of 0V at the ADC input
+    return SD24_B_getResults(SD24_BASE, SD24_B_CONVERTER_0);
 }
