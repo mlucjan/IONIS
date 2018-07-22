@@ -14,7 +14,6 @@ void init_uart();
 void init_sdc();
 void init_spi();
 void ext_uart_crlf();
-void ext_uart_transmit_string(char string[]);
-void ext_uart_transmit_string2(char *string);
+void ext_uart_transmit_resultText();
 
 #endif /* PERIPHERALS_H_ */

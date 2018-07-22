@@ -1,6 +1,6 @@
 #include "peripherals.h"
 
-extern char resultString[8];
+extern char resultText[8];
 void init_uart(){
     //Configure UART pins (UCA1TXD/UCA1SIMO, UCA1RXD/UCA1SOMI)
     //Set P1.4 and P1.5 as Module Function Input
@@ -71,36 +71,7 @@ void init_sdc(){
 
 }
 
-/*void init_spi(){
-    GPIO_setAsPeripheralModuleFunctionInputPin(
-            GPIO_PORT_P2,
-            GPIO_PIN2 + GPIO_PIN3 + GPIO_PIN5 + GPIO_PIN6
-    );
-
-    //Initialize Master
-        USCI_A_SPI_initMasterParam param = {0};
-        param.selectClockSource = USCI_A_SPI_CLOCKSOURCE_SMCLK;
-        param.clockSourceFrequency = UCS_getSMCLK();
-        param.desiredSpiClock = SPICLK;
-        param.msbFirst = USCI_A_SPI_MSB_FIRST;
-        param.clockPhase = USCI_A_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
-        param.clockPolarity = USCI_A_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
-        returnValue =  USCI_A_SPI_initMaster(USCI_A0_BASE, &param);
-
-        if (STATUS_FAIL == returnValue){
-            return;
-        }
-
-        //Enable SPI module
-        USCI_A_SPI_enable(USCI_A0_BASE);
-
-        //Enable Receive interrupt
-        USCI_A_SPI_clearInterrupt(USCI_A0_BASE,
-            USCI_A_SPI_RECEIVE_INTERRUPT);
-        USCI_A_SPI_enableInterrupt(USCI_A0_BASE,
-            USCI_A_SPI_RECEIVE_INTERRUPT);
-}*/
-
+//wysyła CRLF (\r\n) przez UART na interfejsie EUSCI_A1
 void ext_uart_crlf(){
 
     EUSCI_A_UART_transmitData(EUSCI_A1_BASE, 0x0d); //CR
@@ -116,11 +87,12 @@ void ext_uart_crlf(){
  * !!!!!! Zaszumia strasznie przebieg z mikrofonu
  *
  */
-void ext_uart_transmit_resultString(){
+void ext_uart_transmit_resultText(){
     int i;
     for(i=0; i<sizeof(resultString); i++){
         if(resultString[i] != '\x00'){
             EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+            //czeka aż UART skończy poprzednią transmisję
             while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
                 ;
             }
