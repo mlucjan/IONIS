@@ -89,9 +89,9 @@ void ext_uart_crlf(){
  */
 void ext_uart_transmit_resultText(){
     int i;
-    for(i=0; i<sizeof(resultString); i++){
-        if(resultString[i] != '\x00'){
-            EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+    for(i=0; i<sizeof(resultText); i++){
+        if(resultText[i] != '\0'){
+            EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
             //czeka aż UART skończy poprzednią transmisję
             while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
                 ;
