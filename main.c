@@ -7,7 +7,7 @@ uint32_t maxResult = 0;
 uint32_t minResult = 0x00FFFFFF;
 uint16_t timerOverflowCounter=0;
 uint16_t maxTimerOverflows = 1000; //12MHz zegar + divider(2) -> timer przepełnia się w ~11ms
-char resultString[8];
+char resultText[8];
 int i;
 
 void main (void)
@@ -41,17 +41,17 @@ void main (void)
                 minResult = currResult;
             }
 
-            ltoa(currResult, resultString);
-            //ext_uart_transmit_string(resultString);
-            for(i=0; i<sizeof(resultString); i++){
-                if(resultString[i] != '\0'){
-                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
-                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
-                        ;
-                    }
-                }
-            }
-            ext_uart_crlf();
+            ltoa(currResult, resultText);
+            ext_uart_transmit_resultText();
+//            for(i=0; i<sizeof(resultText); i++){
+//                if(resultText[i] != '\0'){
+//                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
+//                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
+//                        ;
+//                    }
+//                }
+//            }
+//            ext_uart_crlf();
         }
         __delay_cycles(60000000);
         micFlag = 0x01;

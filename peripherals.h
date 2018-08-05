@@ -13,6 +13,6 @@
 void init_uart();
 void init_sdc();
 void ext_uart_crlf();
-void ext_uart_transmit_string();
+void ext_uart_transmit_resultText();
 
 #endif /* PERIPHERALS_H_ */
