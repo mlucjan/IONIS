@@ -83,10 +83,7 @@ void ext_uart_crlf(){
     EUSCI_A_UART_transmitData(EUSCI_A1_BASE, 0x0a); //LF
 }
 
-/*
- * !!!!!! Zaszumia strasznie przebieg z mikrofonu
- *
- */
+
 void ext_uart_transmit_resultText(){
     int i;
     for(i=0; i<sizeof(resultText); i++){

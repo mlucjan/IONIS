@@ -50,10 +50,10 @@ void main (void)
 //            absMaxResult = abs(maxResult);
 //
 //            if(absMinResult >= absMaxResult){
-//                ltoa(absMinResult, resultString);
-//                for(i=0; i<sizeof(resultString); i++){
-//                    if(resultString[i] != '\0'){
-//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+//                ltoa(absMinResult, resultText);
+//                for(i=0; i<sizeof(resultText); i++){
+//                    if(resultText[i] != '\0'){
+//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
 //                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
 //                            ;
 //                        }
@@ -62,10 +62,10 @@ void main (void)
 //                ext_uart_crlf();
 //            }
 //            else{
-//                ltoa(absMaxResult, resultString);
-//                for(i=0; i<sizeof(resultString); i++){
-//                    if(resultString[i] != '\0'){
-//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultString[i]);
+//                ltoa(absMaxResult, resultText);
+//                for(i=0; i<sizeof(resultText); i++){
+//                    if(resultText[i] != '\0'){
+//                        EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
 //                        while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
 //                            ;
 //                        }
@@ -77,29 +77,12 @@ void main (void)
 
 
             ltoa(minResult, resultText);
-            for(i=0; i<sizeof(resultText); i++){
-                if(resultText[i] != '\0'){
-                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
-                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
-                        ;
-                    }
-                }
-            }
-            ext_uart_crlf();
+            ext_uart_transmit_resultText();
             clearResultText();
             ltoa(maxResult, resultText);
-            for(i=0; i<sizeof(resultText); i++){
-                if(resultText[i] != '\0'){
-                    EUSCI_A_UART_transmitData(EUSCI_A1_BASE, resultText[i]);
-                    while(EUSCI_A_UART_queryStatusFlags(EUSCI_A1_BASE, EUSCI_A_UART_BUSY)){
-                        ;
-                    }
-                }
-            }
-            ext_uart_crlf();
+            ext_uart_transmit_resultText();
             clearResultText();
 
-            //ext_uart_transmit_string(resultString);
             timerRunning = 0x01;
             minResult = 0x00FFFFFF;
             maxResult = 0;
